@@ -1,0 +1,131 @@
+def feed(pet, food_items):
+    print("\nAvailable food:")
+    for idx, (item, value) in enumerate(food_items.items(), start=1):
+        print(f"{idx}. {item} (-{value} hunger)")
+
+    choice = input("Choose food to give: ")
+
+    try:
+        choice = int(choice)
+        item = list(food_items.keys())[choice - 1]
+        pet["hunger"] -= food_items[item]
+        pet["happiness"] -= 2
+        print(f"You fed your pet some {item}.")
+    except Exception:
+        print("Invalid choice.")
+
+    if pet["hunger"] < 0:
+        pet["hunger"] = 0
+    if pet["happiness"] < 0:
+        pet["happiness"] = 0
+
+
+def play(pet, toy_items):
+    print("\nAvailable toys:")
+    for idx, (toy, fun) in enumerate(toy_items.items(), start=1):
+        print(f"{idx}. {toy} (+{fun} happiness)")
+
+    choice = input("Choose a toy to play with: ")
+
+    try:
+        choice = int(choice)
+        toy = list(toy_items.keys())[choice - 1]
+        pet["happiness"] += toy_items[toy]
+        pet["hunger"] += 5
+        print(f"You played with your pet using the {toy}.")
+    except Exception:
+        print("Invalid choice.")
+
+    if pet["happiness"] > 100:
+        pet["happiness"] = 100
+    if pet["hunger"] > 100:
+        pet["hunger"] = 100
+
+
+def show_status(pet):
+    print("\n--- Pet Status ---")
+    print("Hunger:", pet["hunger"])
+    print("Happiness:", pet["happiness"])
+
+    if pet["hunger"] > 80:
+        print("Your pet is really hungry!")
+    if pet["happiness"] < 20:
+        print("Your pet looks very sad...")
+
+
+def time_goes_by(pet):
+    pet["hunger"] += 5
+    pet["happiness"] -= 5
+
+    if pet["hunger"] > 100:
+        pet["hunger"] = 100
+    if pet["happiness"] < 0:
+        pet["happiness"] = 0
+
+
+def game_over(pet):
+    if pet["hunger"] >= 100:
+        print("\nYour pet is starving! GAME OVER.")
+        return True
+    elif pet["happiness"] <= 0:
+        print("\nYour pet is too sad... GAME OVER.")
+        return True
+    return False
+
+
+def main():
+    name = input("Name your pet: ")
+
+    pet = {
+        "name": name,
+        "hunger": 50,
+        "happiness": 50
+    }
+
+    food_items = {
+        "Biscuits": 10,
+        "Meat": 20,
+        "Carrot": 5
+    }
+
+    toy_items = {
+        "Ball": 10,
+        "Frisbee": 15,
+        "Puzzle": 5
+    }
+
+    steps = 0
+
+    while True:
+        print(f"\nWhat do you want to do with {pet['name']}?")
+        print("1. Feed")
+        print("2. Play")
+        print("3. Check Status")
+        print("4. Quit")
+
+        option = input("Enter choice: ")
+
+        if option == "1":
+            feed(pet, food_items)
+        elif option == "2":
+            play(pet, toy_items)
+        elif option == "3":
+            show_status(pet)
+        elif option == "4":
+            print("Goodbye!")
+            break
+        else:
+            print("Invalid option.")
+
+        steps += 1
+
+        if steps % 3 == 0:
+            print("\nTime is passing...")
+            time_goes_by(pet)
+
+        if game_over(pet):
+            break
+
+
+if __name__ == "__main__":
+    main()
